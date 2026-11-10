@@ -1,0 +1,167 @@
+<UserControl x:Class="PosSystem.Views.BarcodePrintView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:s="clr-namespace:PosSystem.Helpers">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="20"/>
+            <ColumnDefinition Width="430"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- ================= left: sticker list ================= -->
+        <DockPanel>
+            <Border DockPanel.Dock="Top" Style="{StaticResource Panel}" Padding="14,10">
+                <StackPanel>
+                    <DockPanel>
+                        <Button DockPanel.Dock="Right" Content="{s:Tr 'Add'}" Command="{Binding AddItemCommand}" Style="{StaticResource BtnPrimary}" Margin="8,0,0,0" MinWidth="80"/>
+                        <TextBlock DockPanel.Dock="Left" Text="{s:Tr 'Item code'}" VerticalAlignment="Center" FontWeight="SemiBold" Margin="0,0,10,0"/>
+                        <TextBox Text="{Binding EntryCode, UpdateSourceTrigger=PropertyChanged}" FontSize="17" s:FocusOnLoad.Enabled="True"
+                                 ToolTip="{s:Tr 'Scan or type the item code and press Enter. Empty Enter opens item search.'}">
+                            <TextBox.InputBindings>
+                                <KeyBinding Key="Enter" Command="{Binding AddItemCommand}"/>
+                                <KeyBinding Key="F2" Command="{Binding AddItemCommand}"/>
+                            </TextBox.InputBindings>
+                        </TextBox>
+                    </DockPanel>
+                    <DockPanel Margin="0,10,0,0">
+                        <Button DockPanel.Dock="Right" Content="{s:Tr 'Add whole category'}" Command="{Binding AddCategoryCommand}" Margin="8,0,0,0"/>
+                        <TextBlock DockPanel.Dock="Left" Text="{s:Tr 'Category'}" VerticalAlignment="Center" Margin="0,0,10,0" Foreground="{StaticResource MutedBrush}"/>
+                        <ComboBox ItemsSource="{Binding Categories}" SelectedItem="{Binding Category}" DisplayMemberPath="Name"/>
+                    </DockPanel>
+                </StackPanel>
+            </Border>
+
+            <DockPanel DockPanel.Dock="Bottom" Margin="0,12,0,0">
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                    <Button Content="{s:Tr 'Preview'}" Command="{Binding PreviewCommand}" MinWidth="110" Margin="0,0,8,0"/>
+                    <Button Content="{s:Tr 'Print stickers'}" Command="{Binding PrintCommand}" Style="{StaticResource BtnPrimary}" MinWidth="150" MinHeight="46"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="{s:Tr 'Total stickers'}" VerticalAlignment="Center" FontSize="15"/>
+                    <TextBlock Text="{Binding TotalLabels}" FontFamily="{StaticResource DisplayFont}" FontSize="22" FontWeight="SemiBold"
+                               VerticalAlignment="Center" Margin="10,0,24,0"/>
+                    <TextBlock Text="{s:Tr 'Skip used stickers on first sheet'}" VerticalAlignment="Center" Foreground="{StaticResource MutedBrush}"/>
+                    <TextBox Text="{Binding SkipLabels, UpdateSourceTrigger=PropertyChanged}" Width="60" Margin="8,0,0,0" HorizontalContentAlignment="Right"/>
+                </StackPanel>
+            </DockPanel>
+
+            <DockPanel Margin="0,12,0,0">
+                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,8">
+                    <Button Content="{s:Tr 'Add blank sticker'}" Command="{Binding AddBlankCommand}" Margin="0,0,8,0" Padding="10,4"/>
+                    <Button Content="{s:Tr 'Stickers = stock qty'}" Command="{Binding LabelsFromStockCommand}" Margin="0,0,8,0" Padding="10,4"/>
+                    <Button Content="{s:Tr 'Remove line'}" Command="{Binding RemoveRowCommand}" Style="{StaticResource BtnGhost}" Foreground="{StaticResource AlertBrush}" Margin="0,0,8,0"/>
+                    <Button Content="{s:Tr 'Clear list'}" Command="{Binding ClearCommand}" Style="{StaticResource BtnGhost}" Foreground="{StaticResource AlertBrush}"/>
+                </StackPanel>
+                <DataGrid ItemsSource="{Binding Rows}" SelectedItem="{Binding SelectedRow}" IsReadOnly="False" RowHeight="36">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="{s:Tr 'Code'}" Binding="{Binding Code, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
+                        <DataGridTextColumn Header="{s:Tr 'Description'}" Binding="{Binding Description, UpdateSourceTrigger=PropertyChanged}" Width="*"/>
+                        <DataGridTextColumn Header="{s:Tr 'Weight'}" Binding="{Binding Weight, UpdateSourceTrigger=PropertyChanged}" Width="80"/>
+                        <DataGridTextColumn Header="{s:Tr 'Unit price'}" Binding="{Binding Price, UpdateSourceTrigger=PropertyChanged}" Width="95"/>
+                        <DataGridTemplateColumn Header="{s:Tr 'MFD'}" Width="130">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate><DatePicker SelectedDate="{Binding MfdDate, UpdateSourceTrigger=PropertyChanged}" BorderThickness="0"/></DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="{s:Tr 'EXP'}" Width="130">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate><DatePicker SelectedDate="{Binding ExpDate, UpdateSourceTrigger=PropertyChanged}" BorderThickness="0"/></DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="{s:Tr 'Stickers'}" Binding="{Binding Labels, UpdateSourceTrigger=PropertyChanged}" Width="80" FontWeight="Bold"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </DockPanel>
+        </DockPanel>
+
+        <!-- ================= right: sticker settings + preview ================= -->
+        <Border Grid.Column="2" Style="{StaticResource Panel}">
+            <DockPanel>
+                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
+                    <Button Content="{s:Tr 'Default 2 x 1.5 in'}" Command="{Binding DefaultSizeCommand}" Margin="0,0,8,0"/>
+                    <Button Content="{s:Tr 'Save sticker settings'}" Command="{Binding SaveSettingsCommand}" Style="{StaticResource BtnPrimary}"/>
+                </StackPanel>
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <TextBlock Text="{s:Tr 'Sticker preview'}" Style="{StaticResource SectionTitle}"/>
+                        <Border Background="{StaticResource ShelfBrush}" Padding="14" CornerRadius="4">
+                            <Border Background="White" BorderBrush="{StaticResource LineBrush}" BorderThickness="1" HorizontalAlignment="Center"
+                                    CornerRadius="3">
+                                <Viewbox MaxWidth="360" MaxHeight="230" Stretch="Uniform">
+                                    <ContentControl Content="{Binding PreviewLabel}" Focusable="False"/>
+                                </Viewbox>
+                            </Border>
+                        </Border>
+                        <TextBlock Text="{Binding PageInfo}" Style="{StaticResource Hint}" Margin="0,6,0,0"/>
+
+                        <TextBlock Text="{s:Tr 'Sticker size (inches)'}" Style="{StaticResource SectionTitle}" Margin="0,16,0,4"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="10"/><ColumnDefinition/></Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="{s:Tr 'Width'}" Style="{StaticResource FieldLabel}"/>
+                                <TextBox Text="{Binding WidthIn, UpdateSourceTrigger=PropertyChanged, Delay=400}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="{s:Tr 'Height'}" Style="{StaticResource FieldLabel}"/>
+                                <TextBox Text="{Binding HeightIn, UpdateSourceTrigger=PropertyChanged, Delay=400}"/>
+                            </StackPanel>
+                        </Grid>
+                        <WrapPanel Margin="0,6,0,0">
+                            <RadioButton Content="{s:Tr 'Landscape'}" IsChecked="{Binding Landscape}"/>
+                            <RadioButton Content="{s:Tr 'Portrait'}" IsChecked="{Binding Landscape, Converter={StaticResource InvBool}}"/>
+                        </WrapPanel>
+
+                        <TextBlock Text="{s:Tr 'Stickers per page'}" Style="{StaticResource SectionTitle}" Margin="0,14,0,4"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="10"/><ColumnDefinition/></Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="{s:Tr 'Across (horizontal)'}" Style="{StaticResource FieldLabel}"/>
+                                <TextBox Text="{Binding LabelColumns, UpdateSourceTrigger=PropertyChanged, Delay=400}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="{s:Tr 'Down (vertical)'}" Style="{StaticResource FieldLabel}"/>
+                                <TextBox Text="{Binding LabelRows, UpdateSourceTrigger=PropertyChanged, Delay=400}"/>
+                            </StackPanel>
+                        </Grid>
+                        <Grid Margin="0,4,0,0">
+                            <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="10"/><ColumnDefinition/></Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions><RowDefinition/><RowDefinition/></Grid.RowDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="{s:Tr 'Gap across (mm)'}" Style="{StaticResource FieldLabel}"/>
+                                <TextBox Text="{Binding GapHMm, UpdateSourceTrigger=PropertyChanged, Delay=400}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="{s:Tr 'Gap down (mm)'}" Style="{StaticResource FieldLabel}"/>
+                                <TextBox Text="{Binding GapVMm, UpdateSourceTrigger=PropertyChanged, Delay=400}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Row="1">
+                                <TextBlock Text="{s:Tr 'Left margin (mm)'}" Style="{StaticResource FieldLabel}"/>
+                                <TextBox Text="{Binding MarginLeftMm, UpdateSourceTrigger=PropertyChanged, Delay=400}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Row="1" Grid.Column="2">
+                                <TextBlock Text="{s:Tr 'Top margin (mm)'}" Style="{StaticResource FieldLabel}"/>
+                                <TextBox Text="{Binding MarginTopMm, UpdateSourceTrigger=PropertyChanged, Delay=400}"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <TextBlock Text="{s:Tr 'Show on sticker'}" Style="{StaticResource SectionTitle}" Margin="0,14,0,4"/>
+                        <WrapPanel>
+                            <CheckBox Content="{s:Tr 'Shop name'}" IsChecked="{Binding ShowShopName}" Margin="0,4,16,4"/>
+                            <CheckBox Content="{s:Tr 'Weight'}" IsChecked="{Binding ShowWeight}" Margin="0,4,16,4"/>
+                            <CheckBox Content="{s:Tr 'Unit price'}" IsChecked="{Binding ShowPrice}" Margin="0,4,16,4"/>
+                            <CheckBox Content="{s:Tr 'Code number'}" IsChecked="{Binding ShowCode}" Margin="0,4,16,4"/>
+                            <CheckBox Content="{s:Tr 'MFD / EXP dates'}" IsChecked="{Binding ShowDates}" Margin="0,4,16,4"/>
+                        </WrapPanel>
+
+                        <TextBlock Text="{s:Tr 'Sticker printer'}" Style="{StaticResource SectionTitle}" Margin="0,14,0,4"/>
+                        <ComboBox ItemsSource="{Binding Printers}" Text="{Binding Printer}" IsEditable="True"/>
+                        <CheckBox Content="{s:Tr 'Turn 90 degrees (if the printer prints sideways)'}" IsChecked="{Binding Rotate}" Margin="0,8,0,0"/>
+                        <TextBlock Style="{StaticResource Hint}" Margin="0,6,0,0"
+                                   Text="{s:Tr 'Label roll printer: set the driver paper size to the full page shown above. A4 sticker sheet: use the across / down and margin values of the sheet.'}"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </DockPanel>
+        </Border>
+    </Grid>
+</UserControl>

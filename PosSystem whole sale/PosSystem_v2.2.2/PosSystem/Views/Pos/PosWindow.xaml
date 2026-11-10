@@ -1,0 +1,39 @@
+<Window x:Class="PosSystem.Views.Pos.PosWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:s="clr-namespace:PosSystem.Helpers"
+        xmlns:p="clr-namespace:PosSystem.Views.Pos"
+        Title="{s:Tr 'Billing'}" WindowState="Maximized" WindowStyle="None" ResizeMode="NoResize"
+        Background="{StaticResource ShelfBrush}" FontFamily="{StaticResource BodyFont}"
+        PreviewKeyDown="OnPreviewKeyDown" PreviewTextInput="OnPreviewTextInput">
+    <Window.InputBindings>
+        <KeyBinding Key="F1" Command="{Binding HelpCommand}"/>
+        <KeyBinding Key="F2" Command="{Binding SearchItemCommand}"/>
+        <KeyBinding Key="F3" Command="{Binding ChangeQtyCommand}"/>
+        <KeyBinding Key="F4" Command="{Binding LineDiscountCommand}"/>
+        <KeyBinding Key="F5" Command="{Binding BillDiscountEditCommand}"/>
+        <KeyBinding Key="F6" Command="{Binding HoldCommand}"/>
+        <KeyBinding Key="F7" Command="{Binding RecallCommand}"/>
+        <KeyBinding Key="F8" Command="{Binding SelectCustomerCommand}"/>
+        <KeyBinding Key="F9" Command="{Binding VoidLineCommand}"/>
+        <KeyBinding Key="End" Command="{Binding PayCommand}"/>
+        <KeyBinding Key="F11" Command="{Binding ToggleModeCommand}"/>
+        <KeyBinding Key="F12" Command="{Binding CancelBillCommand}"/>
+        <KeyBinding Key="Add" Command="{Binding IncreaseQtyCommand}"/>
+        <KeyBinding Key="Subtract" Command="{Binding DecreaseQtyCommand}"/>
+        <KeyBinding Key="E" Modifiers="Control" Command="{Binding PriceChangeCommand}"/>
+        <KeyBinding Key="P" Modifiers="Control" Command="{Binding ReprintCommand}"/>
+        <KeyBinding Key="R" Modifiers="Control" Command="{Binding ReturnCommand}"/>
+        <KeyBinding Key="D" Modifiers="Control" Command="{Binding OpenDrawerCommand}"/>
+        <KeyBinding Key="L" Modifiers="Control" Command="{Binding ChangeLocationCommand}"/>
+        <KeyBinding Key="O" Modifiers="Control" Command="{Binding CashEntryCommand}" CommandParameter="out"/>
+        <KeyBinding Key="M" Modifiers="Control" Command="{Binding CashEntryCommand}" CommandParameter="in"/>
+        <KeyBinding Key="N" Modifiers="Control" Command="{Binding EditLineNoteCommand}"/>
+        <KeyBinding Key="Escape" Command="{Binding ExitCommand}"/>
+    </Window.InputBindings>
+    <Grid>
+        <p:PosKeyboardView x:Name="KeyboardView" Visibility="{Binding IsTouchMode, Converter={StaticResource BoolToVisInv}}"/>
+        <p:PosTouchView x:Name="TouchView" Visibility="{Binding IsTouchMode, Converter={StaticResource BoolToVis}}"/>
+        <Border Background="#33000000" Visibility="{Binding IsBusy, Converter={StaticResource BoolToVis}}" IsHitTestVisible="False"/>
+    </Grid>
+</Window>

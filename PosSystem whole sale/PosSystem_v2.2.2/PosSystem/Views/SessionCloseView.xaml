@@ -1,0 +1,69 @@
+<UserControl x:Class="PosSystem.Views.SessionCloseView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:s="clr-namespace:PosSystem.Helpers">
+    <Grid>
+        <Border Style="{StaticResource Panel}" VerticalAlignment="Top" HorizontalAlignment="Left" Width="520"
+                Visibility="{Binding HasSession, Converter={StaticResource BoolToVisInv}}">
+            <TextBlock Text="{s:Tr 'You do not have an open shift on this till. A shift starts automatically when you open billing.'}" TextWrapping="Wrap" FontSize="15"/>
+        </Border>
+        <Grid Visibility="{Binding HasSession, Converter={StaticResource BoolToVis}}">
+            <Grid.ColumnDefinitions><ColumnDefinition Width="420"/><ColumnDefinition Width="20"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+            <Border Style="{StaticResource Panel}" VerticalAlignment="Top">
+                <StackPanel>
+                    <TextBlock Text="{s:Tr 'Count the cash in the drawer'}" Style="{StaticResource SectionTitle}"/>
+                    <ItemsControl ItemsSource="{Binding Denominations}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,2">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="110"/><ColumnDefinition Width="110"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding Label, Converter={StaticResource Tr}}" FontFamily="{StaticResource DisplayFont}" FontSize="16" VerticalAlignment="Center"/>
+                                    <TextBox Grid.Column="1" Text="{Binding Count, UpdateSourceTrigger=PropertyChanged}" MinHeight="32" Padding="6,2" HorizontalContentAlignment="Right"/>
+                                    <TextBlock Grid.Column="2" Text="{Binding Total, StringFormat={}{0:N2}}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <DockPanel Margin="0,12,0,0">
+                        <TextBlock DockPanel.Dock="Right" Text="{Binding Counted, StringFormat={}{0:N2}}" FontFamily="{StaticResource DisplayFont}" FontSize="26" FontWeight="SemiBold"/>
+                        <TextBlock Text="{s:Tr 'Counted cash'}" VerticalAlignment="Center" FontSize="15"/>
+                    </DockPanel>
+                </StackPanel>
+            </Border>
+            <Border Grid.Column="2" Style="{StaticResource Panel}" VerticalAlignment="Top" MaxWidth="560" HorizontalAlignment="Left" MinWidth="440">
+                <StackPanel TextBlock.FontSize="15">
+                    <TextBlock Style="{StaticResource SectionTitle}">
+                        <Run Text="{s:Tr 'Shift of'}"/> <Run Text="{Binding Summary.Cashier, Mode=OneWay}"/>
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource Hint}" Margin="0,-6,0,10">
+                        <Run Text="{s:Tr 'Started'}"/> <Run Text="{Binding Summary.StartTime, StringFormat={}{0:yyyy-MM-dd HH:mm}, Mode=OneWay}"/>   <Run Text="{Binding Summary.Terminal, Mode=OneWay}"/>
+                    </TextBlock>
+                    <DockPanel><TextBlock DockPanel.Dock="Right" Text="{Binding Summary.Bills}"/><TextBlock Text="{s:Tr 'Bills'}"/></DockPanel>
+                    <DockPanel><TextBlock DockPanel.Dock="Right" Text="{Binding Summary.CancelledBills}"/><TextBlock Text="{s:Tr 'Cancelled bills'}"/></DockPanel>
+                    <DockPanel><TextBlock DockPanel.Dock="Right" Text="{Binding Summary.NetSales, StringFormat={}{0:N2}}" FontWeight="SemiBold"/><TextBlock Text="{s:Tr 'Net sales'}"/></DockPanel>
+                    <ItemsControl ItemsSource="{Binding ByMethod}" Margin="16,4,0,4" TextBlock.Foreground="{StaticResource MutedBrush}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <DockPanel><TextBlock DockPanel.Dock="Right" Text="{Binding Amount, StringFormat={}{0:N2}}"/><TextBlock Text="{Binding Method}"/></DockPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <Border BorderBrush="{StaticResource LineBrush}" BorderThickness="0,1,0,0" Margin="0,8"/>
+                    <DockPanel><TextBlock DockPanel.Dock="Right" Text="{Binding Summary.OpeningBalance, StringFormat={}{0:N2}}"/><TextBlock Text="{s:Tr 'Opening float'}"/></DockPanel>
+                    <DockPanel><TextBlock DockPanel.Dock="Right" Text="{Binding Summary.CashSales, StringFormat=+ {0:N2}}"/><TextBlock Text="{s:Tr 'Cash sales'}"/></DockPanel>
+                    <DockPanel><TextBlock DockPanel.Dock="Right" Text="{Binding Summary.ReceivedPayments, StringFormat=+ {0:N2}}"/><TextBlock Text="{s:Tr 'Money received'}"/></DockPanel>
+                    <DockPanel><TextBlock DockPanel.Dock="Right" Text="{Binding Summary.PaidOuts, StringFormat=- {0:N2}}"/><TextBlock Text="{s:Tr 'Paid outs'}"/></DockPanel>
+                    <DockPanel><TextBlock DockPanel.Dock="Right" Text="{Binding Summary.CashRefunds, StringFormat=- {0:N2}}"/><TextBlock Text="{s:Tr 'Cash refunds'}"/></DockPanel>
+                    <DockPanel Margin="0,6,0,0">
+                        <TextBlock DockPanel.Dock="Right" Text="{Binding Summary.ExpectedCash, StringFormat={}{0:N2}}" FontFamily="{StaticResource DisplayFont}" FontSize="22"/>
+                        <TextBlock Text="{s:Tr 'Cash expected in drawer'}" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                    </DockPanel>
+                    <Border Background="{StaticResource TagSoftBrush}" CornerRadius="4" Padding="12,8" Margin="0,12,0,0">
+                        <TextBlock Text="{Binding DifferenceText, Converter={StaticResource Tr}}" FontFamily="{StaticResource DisplayFont}" FontSize="20"/>
+                    </Border>
+                    <Button Content="{s:Tr 'Close shift and print Z report'}" Command="{Binding CloseShiftCommand}" Style="{StaticResource BtnPrimary}" MinHeight="48" Margin="0,16,0,0"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

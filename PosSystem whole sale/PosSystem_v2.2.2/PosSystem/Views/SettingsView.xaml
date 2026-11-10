@@ -1,0 +1,196 @@
+<UserControl x:Class="PosSystem.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:s="clr-namespace:PosSystem.Helpers">
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
+            <Button Content="{s:Tr 'Save settings'}" Command="{Binding SaveCommand}" Style="{StaticResource BtnPrimary}" MinWidth="140"/>
+        </StackPanel>
+        <TabControl FontSize="14" Padding="16">
+            <!-- shop details -->
+            <TabItem Header="{s:Tr 'Shop details (bill header)'}" IsEnabled="{Binding CanManageShop}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <Grid MaxWidth="900" HorizontalAlignment="Left">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="20"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="{s:Tr 'Shop name'}" Style="{StaticResource FieldLabel}"/>
+                            <TextBox Text="{Binding Shop.ShopName}" FontWeight="SemiBold"/>
+                            <TextBlock Text="{s:Tr 'Address line 1'}" Style="{StaticResource FieldLabel}"/>
+                            <TextBox Text="{Binding Shop.Address1}"/>
+                            <TextBlock Text="{s:Tr 'Address line 2'}" Style="{StaticResource FieldLabel}"/>
+                            <TextBox Text="{Binding Shop.Address2}"/>
+                            <TextBlock Text="{s:Tr 'City'}" Style="{StaticResource FieldLabel}"/>
+                            <TextBox Text="{Binding Shop.Address3}"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="12"/><ColumnDefinition/></Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="{s:Tr 'Mobile (prints as Mob :)'}" Style="{StaticResource FieldLabel}"/>
+                                    <TextBox Text="{Binding Shop.Mobile}"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="{s:Tr 'Telephone (prints as Tel :)'}" Style="{StaticResource FieldLabel}"/>
+                                    <TextBox Text="{Binding Shop.Phone}"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <!-- logo -->
+                            <TextBlock Text="{s:Tr 'Bill logo'}" Style="{StaticResource SectionTitle}" Margin="0,22,0,6"/>
+                            <DockPanel>
+                                <Border DockPanel.Dock="Left" Width="190" Height="110" Background="White" BorderBrush="{StaticResource LineBrush}"
+                                        BorderThickness="1" CornerRadius="4" Padding="6" Margin="0,0,14,0">
+                                    <Grid>
+                                        <TextBlock Text="{s:Tr 'No logo'}" Foreground="{StaticResource MutedBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                   Visibility="{Binding LogoPreview, Converter={StaticResource NullToVisInv}}"/>
+                                        <Image Source="{Binding LogoPreview}" Stretch="Uniform"/>
+                                    </Grid>
+                                </Border>
+                                <StackPanel>
+                                    <Button Content="{s:Tr 'Choose image...'}" Command="{Binding BrowseLogoCommand}" HorizontalAlignment="Left" MinWidth="150"/>
+                                    <Button Content="{s:Tr 'Remove logo'}" Command="{Binding RemoveLogoCommand}" Style="{StaticResource BtnGhost}"
+                                            Foreground="{StaticResource AlertBrush}" HorizontalAlignment="Left" Margin="0,6,0,0"/>
+                                    <CheckBox Content="{s:Tr 'Print logo on bills'}" IsChecked="{Binding Shop.ShowLogo}"/>
+                                    <TextBlock Style="{StaticResource Hint}" Text="{s:Tr 'PNG or JPG. Black and white logos print best on thermal paper. The image is stored in the database, so every till uses the same logo.'}"/>
+                                </StackPanel>
+                            </DockPanel>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="{s:Tr 'Email'}" Style="{StaticResource FieldLabel}"/>
+                            <TextBox Text="{Binding Shop.Email}"/>
+                            <TextBlock Text="{s:Tr 'Web'}" Style="{StaticResource FieldLabel}"/>
+                            <TextBox Text="{Binding Shop.Web}"/>
+                            <TextBlock Text="{s:Tr 'VAT / tax registration no (printed when filled)'}" Style="{StaticResource FieldLabel}"/>
+                            <TextBox Text="{Binding Shop.TaxRegNo}"/>
+                            <TextBlock Text="{s:Tr 'Line under the header (e.g. opening hours)'}" Style="{StaticResource FieldLabel}"/>
+                            <TextBox Text="{Binding Shop.ReceiptHeaderNote}"/>
+                            <TextBlock Text="{s:Tr 'Bill footer / greeting'}" Style="{StaticResource FieldLabel}"/>
+                            <TextBox Text="{Binding Shop.ReceiptFooter}" AcceptsReturn="True" Height="70" TextWrapping="Wrap" VerticalContentAlignment="Top"/>
+                            <TextBlock Text="{s:Tr 'Bottom line (e.g. Powered by ... / support number)'}" Style="{StaticResource FieldLabel}"/>
+                            <TextBox Text="{Binding Shop.PoweredBy}"/>
+                            <CheckBox Content="{s:Tr 'Print the bill number as a barcode (scan it for returns)'}" IsChecked="{Binding Shop.ShowBarcode}" Margin="0,12,0,0"/>
+                        </StackPanel>
+                    </Grid>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- billing & tax -->
+            <TabItem Header="{s:Tr 'Billing &amp; tax'}" IsEnabled="{Binding CanManageShop}">
+                <StackPanel MaxWidth="620" HorizontalAlignment="Left">
+                    <TextBlock Text="{s:Tr 'Tax'}" Style="{StaticResource SectionTitle}" Margin="0,4,0,4"/>
+                    <CheckBox Content="{s:Tr 'Enable tax on bills'}" IsChecked="{Binding Shop.TaxEnabled}"/>
+                    <CheckBox Content="{s:Tr 'Selling prices already include tax (inclusive)'}" IsChecked="{Binding Shop.PricesIncludeTax}" IsEnabled="{Binding Shop.TaxEnabled}"/>
+                    <TextBlock Style="{StaticResource Hint}" Text="{s:Tr 'Set the tax for each item in Items. Inclusive: tax is shown inside the total. Exclusive: tax is added on top of the total.'}"/>
+
+                    <TextBlock Text="{s:Tr 'Billing'}" Style="{StaticResource SectionTitle}" Margin="0,20,0,4"/>
+                    <CheckBox Content="{s:Tr 'Allow billing when the system stock is zero (negative stock)'}" IsChecked="{Binding Shop.AllowNegativeStock}"/>
+                    <Grid Margin="0,4,0,0">
+                        <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="16"/><ColumnDefinition/><ColumnDefinition Width="16"/><ColumnDefinition/></Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="{s:Tr 'Currency symbol'}" Style="{StaticResource FieldLabel}"/>
+                            <TextBox Text="{Binding Shop.CurrencySymbol}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="{s:Tr 'Round bill to (0 = off)'}" Style="{StaticResource FieldLabel}"/>
+                            <TextBox Text="{Binding Shop.RoundTo}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="4">
+                            <TextBlock Text="{s:Tr 'Return allowed within days'}" Style="{StaticResource FieldLabel}"/>
+                            <TextBox Text="{Binding Shop.ReturnDaysLimit}"/>
+                        </StackPanel>
+                    </Grid>
+                    <TextBlock Text="{s:Tr 'Credit note valid for days (0 = never expires)'}" Style="{StaticResource FieldLabel}"/>
+                    <TextBox Text="{Binding Shop.CreditNoteValidDays}" Width="180" HorizontalAlignment="Left"/>
+                </StackPanel>
+            </TabItem>
+
+            <!-- terminal & printers -->
+            <TabItem Header="{s:Tr 'This till and printers'}" IsEnabled="{Binding CanManageTerminal}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <Grid>
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="24"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="{s:Tr 'Till'}" Style="{StaticResource SectionTitle}" Margin="0,4,0,0"/>
+                            <TextBlock Text="{s:Tr 'Counter name'}" Style="{StaticResource FieldLabel}"/>
+                            <TextBox Text="{Binding Terminal.Description}"/>
+                            <TextBlock Text="{s:Tr 'Location this till bills from'}" Style="{StaticResource FieldLabel}"/>
+                            <ComboBox ItemsSource="{Binding Locations}" SelectedItem="{Binding PrinterLocation}" DisplayMemberPath="LocationName"/>
+                            <CheckBox Content="{s:Tr 'Open the billing screen in touch mode'}" IsChecked="{Binding Terminal.DefaultTouchMode}" Margin="0,12,0,0"/>
+
+                            <TextBlock Text="{s:Tr 'Receipt printer (roll)'}" Style="{StaticResource SectionTitle}" Margin="0,20,0,0"/>
+                            <TextBlock Text="{s:Tr 'Printer'}" Style="{StaticResource FieldLabel}"/>
+                            <ComboBox ItemsSource="{Binding Printers}" Text="{Binding Terminal.ReceiptPrinter}" IsEditable="True"/>
+                            <TextBlock Text="{s:Tr 'Printer type'}" Style="{StaticResource FieldLabel}"/>
+                            <WrapPanel>
+                                <RadioButton Content="{s:Tr 'Thermal'}" IsChecked="{Binding ReceiptFormat, Converter={StaticResource EqBool}, ConverterParameter=1}"/>
+                                <RadioButton Content="{s:Tr 'Dot matrix (roll)'}" IsChecked="{Binding ReceiptFormat, Converter={StaticResource EqBool}, ConverterParameter=2}"/>
+                                <RadioButton Content="{s:Tr 'A5 half sheet as default'}" IsChecked="{Binding ReceiptFormat, Converter={StaticResource EqBool}, ConverterParameter=3}"/>
+                            </WrapPanel>
+                            <TextBlock Text="{s:Tr 'Print method'}" Style="{StaticResource FieldLabel}"/>
+                            <WrapPanel>
+                                <RadioButton Content="{s:Tr 'Windows driver (fonts, Sinhala / Tamil)'}" IsChecked="{Binding PrintEngine, Converter={StaticResource EqBool}, ConverterParameter=1}"/>
+                                <RadioButton Content="{s:Tr 'Direct text / ESC-POS (fastest)'}" IsChecked="{Binding PrintEngine, Converter={StaticResource EqBool}, ConverterParameter=2}"/>
+                            </WrapPanel>
+                            <Grid Margin="0,4,0,0">
+                                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="12"/><ColumnDefinition/><ColumnDefinition Width="12"/><ColumnDefinition/></Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="{s:Tr 'Printable width (mm)'}" Style="{StaticResource FieldLabel}"/>
+                                    <TextBox Text="{Binding Terminal.PaperWidthMm}"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="{s:Tr 'Characters per line'}" Style="{StaticResource FieldLabel}"/>
+                                    <TextBox Text="{Binding Terminal.CharsPerLine}"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="4">
+                                    <TextBlock Text="{s:Tr 'Copies'}" Style="{StaticResource FieldLabel}"/>
+                                    <TextBox Text="{Binding Terminal.PrintCopies}"/>
+                                </StackPanel>
+                            </Grid>
+                            <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                                <TextBlock Text="{s:Tr 'Paper presets:'}" VerticalAlignment="Center" Foreground="{StaticResource MutedBrush}" Margin="0,0,8,0"/>
+                                <Button Content="{s:Tr '58 mm'}" Command="{Binding ApplyPaperPresetCommand}" CommandParameter="58" Margin="0,0,6,0" Padding="10,4"/>
+                                <Button Content="{s:Tr '65 mm'}" Command="{Binding ApplyPaperPresetCommand}" CommandParameter="65" Margin="0,0,6,0" Padding="10,4"/>
+                                <Button Content="{s:Tr '76 mm'}" Command="{Binding ApplyPaperPresetCommand}" CommandParameter="76" Margin="0,0,6,0" Padding="10,4"/>
+                                <Button Content="{s:Tr '80 mm'}" Command="{Binding ApplyPaperPresetCommand}" CommandParameter="72" Padding="10,4"/>
+                            </StackPanel>
+                            <CheckBox Content="{s:Tr 'Print the bill automatically after payment'}" IsChecked="{Binding Terminal.AutoPrint}" Margin="0,12,0,0"/>
+                            <CheckBox Content="{s:Tr 'Open cash drawer (connected to the receipt printer)'}" IsChecked="{Binding Terminal.OpenCashDrawer}"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="{s:Tr 'A5 / half A4 invoice printer'}" Style="{StaticResource SectionTitle}" Margin="0,4,0,0"/>
+                            <TextBlock Style="{StaticResource Hint}" Text="{s:Tr 'Used when the cashier picks \'A5 half sheet\' at payment, from Invoices, or when it is the default above. Leave empty to use the receipt printer.'}"/>
+                            <TextBlock Text="{s:Tr 'Printer'}" Style="{StaticResource FieldLabel}"/>
+                            <ComboBox ItemsSource="{Binding Printers}" Text="{Binding Terminal.A5Printer}" IsEditable="True"/>
+                            <CheckBox Content="{s:Tr 'Landscape (half of an A4 sheet, 210 x 148 mm)'}" IsChecked="{Binding Terminal.A5Landscape}" Margin="0,10,0,0"/>
+
+                            <TextBlock Text="{s:Tr 'Test'}" Style="{StaticResource SectionTitle}" Margin="0,24,0,8"/>
+                            <TextBlock Style="{StaticResource Hint}" Text="{s:Tr 'Preview and test use the values on this screen, so you can try settings before saving.'}" Margin="0,0,0,8"/>
+                            <WrapPanel>
+                                <Button Content="{s:Tr 'Preview receipt'}" Command="{Binding PreviewCommand}" CommandParameter="{Binding ReceiptFormat}" Margin="0,0,8,8"/>
+                                <Button Content="{s:Tr 'Test print receipt'}" Command="{Binding TestPrintCommand}" CommandParameter="{Binding ReceiptFormat}" Margin="0,0,8,8"/>
+                                <Button Content="{s:Tr 'Preview A5'}" Command="{Binding PreviewCommand}" CommandParameter="3" Margin="0,0,8,8"/>
+                                <Button Content="{s:Tr 'Test print A5'}" Command="{Binding TestPrintCommand}" CommandParameter="3" Margin="0,0,8,8"/>
+                                <Button Content="{s:Tr 'Open cash drawer'}" Command="{Binding TestDrawerCommand}" Margin="0,0,8,8"/>
+                            </WrapPanel>
+                        </StackPanel>
+                    </Grid>
+                </ScrollViewer>
+            </TabItem>
+            <!-- language -->
+            <TabItem Header="{s:Tr 'Language'}">
+                <StackPanel MaxWidth="560" HorizontalAlignment="Left">
+                    <TextBlock Text="{s:Tr 'System language'}" Style="{StaticResource SectionTitle}" Margin="0,4,0,4"/>
+                    <TextBlock Style="{StaticResource Hint}" Text="{s:Tr 'Menus, buttons and messages are shown in this language on this computer. Bills and reports stay in English.'}"/>
+                    <ListBox ItemsSource="{Binding LanguageList}" SelectedItem="{Binding SelectedLanguage}" Margin="0,12,0,0" Width="260"
+                             HorizontalAlignment="Left" FontSize="18">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate><TextBlock Text="{Binding Name}" Margin="8,8" FontFamily="{StaticResource BodyFont}"/></DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    <Button Content="{s:Tr 'Apply language'}" Command="{Binding ApplyLanguageCommand}" Style="{StaticResource BtnPrimary}"
+                            HorizontalAlignment="Left" Margin="0,14,0,0" MinWidth="180"/>
+                    <TextBlock Style="{StaticResource Hint}" Margin="0,10,0,0" Text="{s:Tr 'The language can also be changed on the sign in screen.'}"/>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+</UserControl>

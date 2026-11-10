@@ -1,0 +1,20 @@
+﻿PosSystem
+
+
+winexe
+C#
+.cs
+D:\My Project\PosSystem_v2.2.2\PosSystem\obj\Debug\net8.0-windows\
+PosSystem
+none
+false
+TRACE;DEBUG;NET;NET8_0;NETCOREAPP;WINDOWS;WINDOWS7_0;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NETCOREAPP1_0_OR_GREATER;NETCOREAPP1_1_OR_GREATER;NETCOREAPP2_0_OR_GREATER;NETCOREAPP2_1_OR_GREATER;NETCOREAPP2_2_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER;WINDOWS7_0_OR_GREATER
+D:\My Project\PosSystem_v2.2.2\PosSystem\App.xaml
+37-1132968890
+
+921712342684
+2221136463075
+Themes\Theme.xaml;Views\BarcodePrintView.xaml;Views\CashEntryView.xaml;Views\DashboardView.xaml;Views\Dialogs\ChangePasswordView.xaml;Views\Dialogs\CustomerPickerView.xaml;Views\Dialogs\DiscountView.xaml;Views\Dialogs\HeldBillsView.xaml;Views\Dialogs\ItemSearchView.xaml;Views\Dialogs\ManagerOverrideView.xaml;Views\Dialogs\MessageDialogView.xaml;Views\Dialogs\OpenSessionView.xaml;Views\Dialogs\PaymentView.xaml;Views\Dialogs\PickListView.xaml;Views\Dialogs\PricePickerView.xaml;Views\Dialogs\ShortcutHelpView.xaml;Views\Dialogs\TerminalSetupView.xaml;Views\Dialogs\TextInputView.xaml;Views\DialogWindow.xaml;Views\InvoicesView.xaml;Views\ItemMasterView.xaml;Views\LoginWindow.xaml;Views\MasterListView.xaml;Views\Pos\PosHeader.xaml;Views\Pos\PosKeyboardView.xaml;Views\Pos\PosTouchView.xaml;Views\Pos\PosWindow.xaml;Views\Pos\TotalPanel.xaml;Views\ReportsView.xaml;Views\RolesView.xaml;Views\SalesReturnView.xaml;Views\SessionCloseView.xaml;Views\SettingsView.xaml;Views\ShellWindow.xaml;Views\StockDocumentView.xaml;Views\SupplierPaymentView.xaml;Views\UsersView.xaml;
+
+False
+

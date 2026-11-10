@@ -1,0 +1,74 @@
+<Window x:Class="PosSystem.Views.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:s="clr-namespace:PosSystem.Helpers"
+        Title="{s:Tr 'POS - Sign in'}" Width="920" Height="560" WindowStartupLocation="CenterScreen"
+        WindowStyle="None" ResizeMode="NoResize" Background="{StaticResource PaperBrush}"
+        BorderBrush="{StaticResource LeafDarkBrush}" BorderThickness="1" FontFamily="{StaticResource BodyFont}"
+        MouseLeftButtonDown="DragWindow">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="5*"/>
+            <ColumnDefinition Width="6*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- brand side: a till receipt rolling out -->
+        <Grid Background="{StaticResource LeafBrush}">
+            <StackPanel Margin="44" VerticalAlignment="Center">
+                <TextBlock Text="{s:Tr 'Point of Sale'}" FontFamily="{StaticResource DisplayFont}" FontSize="40" FontWeight="SemiBold" Foreground="White"/>
+                <TextBlock Text="{s:Tr 'Scan. Pay. Print. Next customer.'}" FontSize="16" Foreground="#CFE6D8" Margin="0,6,0,30"/>
+                <Border Background="White" Width="230" HorizontalAlignment="Left" Padding="16,14" CornerRadius="0,0,2,2">
+                    <StackPanel TextBlock.FontFamily="Consolas" TextBlock.FontSize="12" TextBlock.Foreground="#333">
+                        <TextBlock Text="Bread 450g           180.00"/>
+                        <TextBlock Text="Fresh milk 1L  x2    960.00"/>
+                        <TextBlock Text="  Discount 10%       -96.00" Foreground="#9A6B00"/>
+                        <TextBlock Text="Eggs (10)            650.00"/>
+                        <TextBlock Text="--------------------------"/>
+                        <TextBlock Text="NET TOTAL      Rs. 1,694.00" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+                <Rectangle Width="230" Height="10" HorizontalAlignment="Left">
+                    <Rectangle.Fill>
+                        <VisualBrush TileMode="Tile" Viewport="0,0,10,10" ViewportUnits="Absolute">
+                            <VisualBrush.Visual>
+                                <Polygon Points="0,0 10,0 5,10" Fill="White"/>
+                            </VisualBrush.Visual>
+                        </VisualBrush>
+                    </Rectangle.Fill>
+                </Rectangle>
+            </StackPanel>
+        </Grid>
+
+        <Grid Grid.Column="1">
+            <Button Content="&#xE8BB;" FontFamily="{StaticResource IconFont}" Style="{StaticResource BtnGhost}" Foreground="{StaticResource MutedBrush}"
+                    HorizontalAlignment="Right" VerticalAlignment="Top" Margin="8" Click="CloseClick" ToolTip="{s:Tr 'Close'}"/>
+            <!-- language switch -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="56,18,0,0">
+                <Button Content="English" Tag="en" Click="LanguageClick" Style="{StaticResource BtnGhost}" Padding="8,4"/>
+                <Button Content="සිංහල" Tag="si" Click="LanguageClick" Style="{StaticResource BtnGhost}" Padding="8,4"/>
+                <Button Content="தமிழ்" Tag="ta" Click="LanguageClick" Style="{StaticResource BtnGhost}" Padding="8,4"/>
+            </StackPanel>
+            <StackPanel Margin="64,0" VerticalAlignment="Center">
+                <TextBlock Text="{s:Tr 'Sign in'}" Style="{StaticResource PageTitle}"/>
+                <TextBlock Text="{s:Tr 'Use your POS user name and password.'}" Style="{StaticResource Hint}" Margin="0,4,0,20"/>
+                <TextBlock Text="{s:Tr 'User name'}" Style="{StaticResource FieldLabel}"/>
+                <TextBox Text="{Binding UserName, UpdateSourceTrigger=PropertyChanged}" s:FocusOnLoad.Enabled="True" FontSize="16" KeyDown="UserKeyDown"/>
+                <TextBlock Text="{s:Tr 'Password'}" Style="{StaticResource FieldLabel}"/>
+                <PasswordBox x:Name="Pwd" s:PasswordTarget.Property="Password" FontSize="16">
+                    <PasswordBox.InputBindings>
+                        <KeyBinding Key="Enter" Command="{Binding LoginCommand}"/>
+                    </PasswordBox.InputBindings>
+                </PasswordBox>
+                <Border Background="{StaticResource AlertSoftBrush}" CornerRadius="4" Padding="10,8" Margin="0,14,0,0"
+                        Visibility="{Binding Error, Converter={StaticResource NullToVis}}">
+                    <TextBlock Text="{Binding Error, Converter={StaticResource Tr}}" Foreground="{StaticResource AlertBrush}" TextWrapping="Wrap"/>
+                </Border>
+                <Button Content="{s:Tr 'Sign in'}" Style="{StaticResource BtnPrimary}" Command="{Binding LoginCommand}" Margin="0,20,0,0" MinHeight="46" FontSize="16"
+                        IsEnabled="{Binding IsBusy, Converter={StaticResource InvBool}}"/>
+                <TextBlock Style="{StaticResource Hint}" Margin="0,18,0,0">
+                    <Run Text="{s:Tr 'This computer:'}"/> <Run Text="{Binding MachineName, Mode=OneWay}" FontWeight="SemiBold"/>
+                </TextBlock>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

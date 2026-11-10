@@ -1,0 +1,13 @@
+PosSystem/Data/HoldRepository.cs
+PosSystem/Data/ReturnRepository.cs
+PosSystem/Data/SalesRepository.cs
+PosSystem/Helpers/Translations.cs
+PosSystem/Models/Dtos.cs
+PosSystem/Printing/ReceiptLayout.cs
+PosSystem/ViewModels/CartLineViewModel.cs
+PosSystem/ViewModels/PosDialogs.cs
+PosSystem/ViewModels/PosViewModel.cs
+PosSystem/Views/Pos/PosKeyboardView.xaml
+PosSystem/Views/Pos/PosTouchView.xaml
+PosSystem/Views/Pos/PosWindow.xaml
+database/04_LineNote.sql

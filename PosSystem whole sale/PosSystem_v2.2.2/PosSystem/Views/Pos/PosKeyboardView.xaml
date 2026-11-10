@@ -1,0 +1,161 @@
+<UserControl x:Class="PosSystem.Views.Pos.PosKeyboardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:s="clr-namespace:PosSystem.Helpers"
+             xmlns:p="clr-namespace:PosSystem.Views.Pos">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <p:PosHeader/>
+
+        <Grid Grid.Row="1" Margin="14">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="430"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- left: scan + cart -->
+            <DockPanel Margin="0,0,14,0">
+                <Grid DockPanel.Dock="Top">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid>
+                        <TextBox x:Name="ScanBox" Text="{Binding ScanText, UpdateSourceTrigger=PropertyChanged}" FontFamily="{StaticResource DisplayFont}"
+                                 FontSize="26" MinHeight="58" Padding="14,6" BorderBrush="{StaticResource LeafBrush}">
+                            <TextBox.InputBindings>
+                                <KeyBinding Key="Enter" Command="{Binding ScanCommand}"/>
+                                <KeyBinding Key="Up" Command="{Binding MoveSelectionCommand}" CommandParameter="-1"/>
+                                <KeyBinding Key="Down" Command="{Binding MoveSelectionCommand}" CommandParameter="1"/>
+                            </TextBox.InputBindings>
+                        </TextBox>
+                        <TextBlock Text="{s:Tr 'Scan barcode or type item code   (3*code for quantity 3)'}" IsHitTestVisible="False"
+                                   Foreground="#9AA59F" FontSize="18" VerticalAlignment="Center" Margin="20,0,0,0"
+                                   Visibility="{Binding ScanText, Converter={StaticResource NullToVisInv}}"/>
+                    </Grid>
+                    <Button Grid.Column="1" Style="{StaticResource FKey}" Tag="F2" Content="{s:Tr 'Find item'}" Width="110" Margin="8,0,0,0"
+                            Command="{Binding SearchItemCommand}"/>
+                </Grid>
+
+                <Border DockPanel.Dock="Top" Margin="0,8,0,0" CornerRadius="4" Padding="12,6"
+                        Visibility="{Binding StatusMessage, Converter={StaticResource NullToVis}}">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Background" Value="{StaticResource LeafSoftBrush}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding StatusIsWarning}" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource TagSoftBrush}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <TextBlock Text="{Binding StatusMessage, Converter={StaticResource Tr}}" FontSize="14"/>
+                </Border>
+
+                <Border DockPanel.Dock="Bottom" Style="{StaticResource Panel}" Padding="12,8" Margin="0,8,0,0">
+                    <DockPanel>
+                        <Button DockPanel.Dock="Right" Style="{StaticResource FKey}" Tag="F8" Content="{s:Tr 'Customer'}" Width="110" MinHeight="44" Margin="0"
+                                Command="{Binding SelectCustomerCommand}"/>
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="{s:Tr 'Walk-in customer'}" Foreground="{StaticResource MutedBrush}"
+                                       Visibility="{Binding Customer, Converter={StaticResource NullToVisInv}}"/>
+                            <StackPanel Visibility="{Binding Customer, Converter={StaticResource NullToVis}}">
+                                <TextBlock FontWeight="SemiBold" FontSize="15">
+                                    <Run Text="{Binding Customer.Name, Mode=OneWay}"/>  <Run Text="{Binding Customer.Mobile, Mode=OneWay}" Foreground="{StaticResource MutedBrush}"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Hint}">
+                                    <Run Text="{s:Tr 'Outstanding'}"/> <Run Text="{Binding Customer.Outstanding, StringFormat={}{0:N2}, Mode=OneWay}"/>   <Run Text="{s:Tr 'Credit limit'}"/> <Run Text="{Binding Customer.CreditLimit, StringFormat={}{0:N2}, Mode=OneWay}"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+
+                <DataGrid x:Name="Cart" ItemsSource="{Binding Lines}" SelectedItem="{Binding SelectedLine}" Margin="0,8,0,0"
+                          RowHeight="42" FontSize="15.5" SelectionChanged="CartSelectionChanged">
+                    <DataGrid.InputBindings>
+                        <!-- double-click a line: add a note such as 2x4 after the item name -->
+                        <MouseBinding Gesture="LeftDoubleClick" Command="{Binding EditLineNoteCommand}"/>
+                    </DataGrid.InputBindings>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="#" Binding="{Binding LineNo}" Width="44"/>
+                        <DataGridTextColumn Header="{s:Tr 'Code'}" Binding="{Binding Code}" Width="110"/>
+                        <DataGridTextColumn Header="{s:Tr 'Item'}" Binding="{Binding DisplayName}" Width="*"/>
+                        <DataGridTextColumn Header="{s:Tr 'Qty'}" Binding="{Binding Qty, StringFormat={}{0:0.###}}" Width="80" ElementStyle="{StaticResource RightCell}"/>
+                        <DataGridTextColumn Header="{s:Tr 'Price'}" Binding="{Binding UnitPrice, StringFormat={}{0:N2}}" Width="100" ElementStyle="{StaticResource RightCell}"/>
+                        <DataGridTemplateColumn Header="{s:Tr 'Discount'}" Width="150">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Border Background="{StaticResource TagBrush}" CornerRadius="3" Padding="6,1" HorizontalAlignment="Right"
+                                            Visibility="{Binding HasDiscount, Converter={StaticResource BoolToVis}}">
+                                        <TextBlock Text="{Binding DiscountText}" FontSize="13" FontWeight="SemiBold"/>
+                                    </Border>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="{s:Tr 'Amount'}" Binding="{Binding RowAmount, StringFormat={}{0:N2}}" Width="120" FontWeight="SemiBold"
+                                            ElementStyle="{StaticResource RightCell}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </DockPanel>
+
+            <!-- right: display, totals, keys -->
+            <DockPanel Grid.Column="1">
+                <p:TotalPanel DockPanel.Dock="Top"/>
+
+                <Border DockPanel.Dock="Top" Style="{StaticResource Panel}" Padding="14,10" Margin="0,10,0,0">
+                    <StackPanel TextBlock.FontSize="14">
+                        <DockPanel><TextBlock DockPanel.Dock="Right" Text="{Binding GrossTotal, StringFormat={}{0:N2}}"/><TextBlock Text="{s:Tr 'Gross'}"/></DockPanel>
+                        <DockPanel Visibility="{Binding LineDiscountTotal, Converter={StaticResource NonZeroToVis}}">
+                            <TextBlock DockPanel.Dock="Right" Text="{Binding LineDiscountTotal, StringFormat=-{0:N2}}"/><TextBlock Text="{s:Tr 'Item discounts'}"/>
+                        </DockPanel>
+                        <DockPanel Visibility="{Binding BillDiscount, Converter={StaticResource NonZeroToVis}}">
+                            <TextBlock DockPanel.Dock="Right" Text="{Binding BillDiscount, StringFormat=-{0:N2}}"/><TextBlock Text="{Binding BillDiscountText}"/>
+                        </DockPanel>
+                        <DockPanel Visibility="{Binding TaxTotal, Converter={StaticResource NonZeroToVis}}">
+                            <TextBlock DockPanel.Dock="Right" Text="{Binding TaxTotal, StringFormat={}{0:N2}}"/><TextBlock Text="{Binding TaxLabel}"/>
+                        </DockPanel>
+                        <DockPanel Visibility="{Binding RoundOff, Converter={StaticResource NonZeroToVis}}">
+                            <TextBlock DockPanel.Dock="Right" Text="{Binding RoundOff, StringFormat={}{0:N2}}"/><TextBlock Text="{s:Tr 'Round off'}"/>
+                        </DockPanel>
+                    </StackPanel>
+                </Border>
+
+                <Button DockPanel.Dock="Bottom" Style="{StaticResource BtnPrimary}" Command="{Binding PayCommand}" MinHeight="74" Margin="0,8,0,0" Focusable="False">
+                    <DockPanel Width="380">
+                        <TextBlock DockPanel.Dock="Right" Text="F10" FontFamily="{StaticResource DisplayFont}" FontSize="15" Opacity="0.75" VerticalAlignment="Center"/>
+                        <TextBlock Text="{s:Tr 'Pay'}" FontFamily="{StaticResource DisplayFont}" FontSize="28"/>
+                    </DockPanel>
+                </Button>
+
+                <UniformGrid Columns="3" Margin="-3,8,-3,0" VerticalAlignment="Top">
+                    <Button Style="{StaticResource FKey}" Tag="F3" Content="{s:Tr 'Quantity'}" Command="{Binding ChangeQtyCommand}"/>
+                    <Button Style="{StaticResource FKey}" Tag="F4" Content="{s:Tr 'Item discount'}" Command="{Binding LineDiscountCommand}"/>
+                    <Button Style="{StaticResource FKey}" Tag="F5" Content="{s:Tr 'Bill discount'}" Command="{Binding BillDiscountEditCommand}"/>
+                    <Button Style="{StaticResource FKey}" Tag="F6" Content="{s:Tr 'Hold bill'}" Command="{Binding HoldCommand}"/>
+                    <Button Style="{StaticResource FKey}" Tag="F7" Content="{s:Tr 'Recall bill'}" Command="{Binding RecallCommand}"/>
+                    <Button Style="{StaticResource FKey}" Tag="F9" Content="{s:Tr 'Void line'}" Command="{Binding VoidLineCommand}"/>
+                    <Button Style="{StaticResource FKey}" Tag="Ctrl+E" Content="{s:Tr 'Change price'}" Command="{Binding PriceChangeCommand}"/>
+                    <Button Style="{StaticResource FKey}" Tag="Ctrl+R" Content="{s:Tr 'Return'}" Command="{Binding ReturnCommand}"/>
+                    <Button Style="{StaticResource FKey}" Tag="Ctrl+P" Content="{s:Tr 'Re-print'}" Command="{Binding ReprintCommand}"/>
+                    <Button Style="{StaticResource FKey}" Tag="Ctrl+O" Content="{s:Tr 'Paid out'}" Command="{Binding CashEntryCommand}" CommandParameter="out"/>
+                    <Button Style="{StaticResource FKey}" Tag="Ctrl+D" Content="{s:Tr 'Open drawer'}" Command="{Binding OpenDrawerCommand}"/>
+                    <Button Style="{StaticResource FKey}" Tag="F12" Content="{s:Tr 'Cancel bill'}" Command="{Binding CancelBillCommand}" Foreground="{StaticResource AlertBrush}"/>
+                </UniformGrid>
+            </DockPanel>
+        </Grid>
+
+        <Border Grid.Row="2" Background="{StaticResource PaperBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="0,1,0,0" Padding="16,6">
+            <DockPanel>
+                <TextBlock DockPanel.Dock="Right" Style="{StaticResource Hint}" Visibility="{Binding LastInvoiceNo, Converter={StaticResource NullToVis}}">
+                    <Run Text="{s:Tr 'Last bill'}"/> <Run Text="{Binding LastInvoiceNo, Mode=OneWay}" FontWeight="SemiBold"/>
+                </TextBlock>
+                <TextBlock Style="{StaticResource Hint}" Text="{s:Tr 'F1 all shortcuts     Up/Down select line     numpad + / - change qty     Ctrl+L location     Ctrl+M receive money     Esc close'}"/>
+            </DockPanel>
+        </Border>
+    </Grid>
+</UserControl>

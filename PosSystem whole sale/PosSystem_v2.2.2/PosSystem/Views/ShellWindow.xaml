@@ -1,0 +1,81 @@
+<Window x:Class="PosSystem.Views.ShellWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:s="clr-namespace:PosSystem.Helpers"
+        Title="{Binding ShopName, StringFormat={}{0} - POS back office}" Width="1366" Height="800" WindowState="Maximized"
+        WindowStartupLocation="CenterScreen" Background="{StaticResource ShelfBrush}" FontFamily="{StaticResource BodyFont}">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- sidebar -->
+        <DockPanel Background="{StaticResource LeafDarkBrush}">
+            <StackPanel DockPanel.Dock="Top" Margin="20,20,20,12">
+                <TextBlock Text="{Binding ShopName}" FontFamily="{StaticResource DisplayFont}" FontSize="19" FontWeight="SemiBold"
+                           Foreground="White" TextWrapping="Wrap"/>
+                <TextBlock Text="{Binding LocationName}" Foreground="#A9CDB8" FontSize="12.5" Margin="0,2,0,0"/>
+            </StackPanel>
+            <Button DockPanel.Dock="Top" Style="{StaticResource BtnTag}" Margin="16,4,16,12" MinHeight="48" Command="{Binding OpenPosCommand}"
+                    HorizontalContentAlignment="Left" ToolTip="{s:Tr 'Open the billing screen'}">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="&#xE7BF;" Style="{StaticResource Icon}" FontSize="20" Margin="0,0,12,0"/>
+                    <TextBlock Text="{s:Tr 'Start billing'}" FontSize="16" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
+            <Button DockPanel.Dock="Top" Style="{StaticResource NavButton}" Command="{Binding ShowDashboardCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="&#xE80F;" Style="{StaticResource Icon}" Margin="0,0,12,0"/>
+                    <TextBlock Text="{s:Tr 'Dashboard'}"/>
+                </StackPanel>
+            </Button>
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <ItemsControl ItemsSource="{Binding Menu}" Margin="0,4,0,16">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <TextBlock Text="{Binding Title, Converter={StaticResource Tr}}" Foreground="#86B39A" FontSize="12" Margin="20,14,0,4"/>
+                                <ItemsControl ItemsSource="{Binding Items}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Button Style="{StaticResource NavButton}" CommandParameter="{Binding}"
+                                                    Command="{Binding DataContext.NavigateCommand, RelativeSource={RelativeSource AncestorType=Window}}">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding Icon}" Style="{StaticResource Icon}" Margin="0,0,12,0" FontSize="15"/>
+                                                    <TextBlock Text="{Binding Title, Converter={StaticResource Tr}}"/>
+                                                </StackPanel>
+                                            </Button>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </DockPanel>
+
+        <!-- main -->
+        <DockPanel Grid.Column="1">
+            <Border DockPanel.Dock="Top" Background="{StaticResource PaperBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="0,0,0,1" Padding="28,14">
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+                        <StackPanel Margin="0,0,16,0" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding UserFullName}" FontWeight="SemiBold" HorizontalAlignment="Right"/>
+                            <TextBlock Style="{StaticResource Hint}" HorizontalAlignment="Right">
+                                <Run Text="{Binding TerminalName, Mode=OneWay}"/>  <Run Text="{Binding Now, StringFormat={}{0:ddd dd MMM  HH:mm}, Mode=OneWay}"/>
+                            </TextBlock>
+                        </StackPanel>
+                        <Button Style="{StaticResource BtnGhost}" Command="{Binding ChangePasswordCommand}" ToolTip="{s:Tr 'Change my password'}">
+                            <TextBlock Text="&#xE72E;" Style="{StaticResource Icon}"/>
+                        </Button>
+                        <Button Content="{s:Tr 'Log out'}" Command="{Binding LogoutCommand}" Margin="6,0,0,0"/>
+                    </StackPanel>
+                    <TextBlock Text="{Binding CurrentTitle, Converter={StaticResource Tr}}" Style="{StaticResource PageTitle}" VerticalAlignment="Center"/>
+                </DockPanel>
+            </Border>
+            <ContentControl Content="{Binding CurrentPage}" Margin="28,20,28,24" Focusable="False"/>
+        </DockPanel>
+    </Grid>
+</Window>

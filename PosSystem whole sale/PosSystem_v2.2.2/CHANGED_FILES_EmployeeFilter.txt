@@ -1,0 +1,5 @@
+PosSystem/Models/ReportCatalog.cs
+PosSystem/ViewModels/ReportsViewModel.cs
+PosSystem/Views/ReportsView.xaml
+database/02_Report_Procedures.sql
+PosSystem/Helpers/Translations.cs

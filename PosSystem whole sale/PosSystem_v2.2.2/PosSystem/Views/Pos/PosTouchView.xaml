@@ -1,0 +1,185 @@
+<UserControl x:Class="PosSystem.Views.Pos.PosTouchView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:s="clr-namespace:PosSystem.Helpers"
+             xmlns:p="clr-namespace:PosSystem.Views.Pos">
+    <UserControl.Resources>
+        <Style x:Key="TouchAction" TargetType="Button" BasedOn="{StaticResource BtnBase}">
+            <Setter Property="MinHeight" Value="60"/>
+            <Setter Property="Margin" Value="3"/>
+            <Setter Property="FontSize" Value="14.5"/>
+            <Setter Property="Focusable" Value="False"/>
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <p:PosHeader/>
+
+        <Grid Grid.Row="1" Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="170"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="460"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- categories rail -->
+            <ScrollViewer VerticalScrollBarVisibility="Auto" PanningMode="VerticalOnly">
+                <ItemsControl ItemsSource="{Binding Categories}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <RadioButton GroupName="cat" Focusable="False" Margin="0,0,0,6" Cursor="Hand"
+                                         Command="{Binding DataContext.SelectCategoryCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                         CommandParameter="{Binding}">
+                                <RadioButton.Template>
+                                    <ControlTemplate TargetType="RadioButton">
+                                        <Border x:Name="bd" MinHeight="64" CornerRadius="5" Padding="12,8" BorderThickness="0,0,0,5"
+                                                Background="{StaticResource PaperBrush}" BorderBrush="{Binding Code, Converter={StaticResource HexBrush}}">
+                                            <TextBlock Text="{Binding Name, Converter={StaticResource Tr}}" FontFamily="{StaticResource DisplayFont}" FontSize="16" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsChecked" Value="True">
+                                                <Setter TargetName="bd" Property="Background" Value="{StaticResource LeafSoftBrush}"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </RadioButton.Template>
+                            </RadioButton>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+
+            <!-- item tiles -->
+            <DockPanel Grid.Column="1" Margin="10,0">
+                <Grid DockPanel.Dock="Top" Margin="0,0,0,8">
+                    <TextBox x:Name="ScanBox" Text="{Binding ScanText, UpdateSourceTrigger=PropertyChanged}" FontSize="20" MinHeight="52">
+                        <TextBox.InputBindings>
+                            <KeyBinding Key="Enter" Command="{Binding ScanCommand}"/>
+                        </TextBox.InputBindings>
+                    </TextBox>
+                    <TextBlock Text="{s:Tr 'Scan or type a code, or tap an item below'}" IsHitTestVisible="False" Foreground="#9AA59F" FontSize="16"
+                               VerticalAlignment="Center" Margin="14,0,0,0" Visibility="{Binding ScanText, Converter={StaticResource NullToVisInv}}"/>
+                </Grid>
+                <ScrollViewer VerticalScrollBarVisibility="Auto" PanningMode="VerticalOnly">
+                    <ItemsControl ItemsSource="{Binding TouchItems}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Style="{StaticResource Tile}" Width="158" Height="104" Padding="0"
+                                        Command="{Binding DataContext.TouchAddCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                        CommandParameter="{Binding}">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="6"/>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <Border Background="{Binding TouchColor, Converter={StaticResource HexBrush}}" CornerRadius="4,4,0,0"/>
+                                        <TextBlock Grid.Row="1" Text="{Binding DisplayName}" TextWrapping="Wrap" TextTrimming="CharacterEllipsis"
+                                                   FontSize="14.5" Margin="10,6,10,0"/>
+                                        <DockPanel Grid.Row="2" Margin="10,0,10,8">
+                                            <TextBlock DockPanel.Dock="Right" Text="{Binding StockOnHand, StringFormat={}{0:0.##}}" Foreground="{StaticResource MutedBrush}" FontSize="12"/>
+                                            <TextBlock Text="{Binding SellingPrice, StringFormat={}{0:N2}}" FontFamily="{StaticResource DisplayFont}" FontSize="17" FontWeight="SemiBold"
+                                                       Foreground="{StaticResource LeafBrush}"/>
+                                        </DockPanel>
+                                    </Grid>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </DockPanel>
+
+            <!-- cart, numpad, actions -->
+            <DockPanel Grid.Column="2">
+                <p:TotalPanel DockPanel.Dock="Top"/>
+
+                <Button DockPanel.Dock="Bottom" Style="{StaticResource BtnPrimary}" Command="{Binding PayCommand}" MinHeight="78" Margin="0,6,0,0" Focusable="False">
+                    <TextBlock FontFamily="{StaticResource DisplayFont}" FontSize="28">
+                        <Run Text="{s:Tr 'Pay'}"/>  <Run Text="{Binding NetTotal, StringFormat={}{0:N2}, Mode=OneWay}"/>
+                    </TextBlock>
+                </Button>
+
+                <Grid DockPanel.Dock="Bottom" Margin="0,6,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <!-- numpad -->
+                    <StackPanel>
+                        <Border Background="White" BorderBrush="{StaticResource LineBrush}" BorderThickness="1" CornerRadius="4" Margin="3" Padding="10,4" Height="44">
+                            <Grid>
+                                <TextBlock Text="{s:Tr 'Qty, then tap item'}" Foreground="#9AA59F" VerticalAlignment="Center"
+                                           Visibility="{Binding NumpadText, Converter={StaticResource NullToVisInv}}"/>
+                                <TextBlock Text="{Binding NumpadText}" FontFamily="{StaticResource DisplayFont}" FontSize="24" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+                        <UniformGrid Columns="3" Height="236">
+                            <Button Style="{StaticResource NumKey}" Content="7" Command="{Binding NumpadCommand}" CommandParameter="7"/>
+                            <Button Style="{StaticResource NumKey}" Content="8" Command="{Binding NumpadCommand}" CommandParameter="8"/>
+                            <Button Style="{StaticResource NumKey}" Content="9" Command="{Binding NumpadCommand}" CommandParameter="9"/>
+                            <Button Style="{StaticResource NumKey}" Content="4" Command="{Binding NumpadCommand}" CommandParameter="4"/>
+                            <Button Style="{StaticResource NumKey}" Content="5" Command="{Binding NumpadCommand}" CommandParameter="5"/>
+                            <Button Style="{StaticResource NumKey}" Content="6" Command="{Binding NumpadCommand}" CommandParameter="6"/>
+                            <Button Style="{StaticResource NumKey}" Content="1" Command="{Binding NumpadCommand}" CommandParameter="1"/>
+                            <Button Style="{StaticResource NumKey}" Content="2" Command="{Binding NumpadCommand}" CommandParameter="2"/>
+                            <Button Style="{StaticResource NumKey}" Content="3" Command="{Binding NumpadCommand}" CommandParameter="3"/>
+                            <Button Style="{StaticResource NumKey}" Content="." Command="{Binding NumpadCommand}" CommandParameter="."/>
+                            <Button Style="{StaticResource NumKey}" Content="0" Command="{Binding NumpadCommand}" CommandParameter="0"/>
+                            <Button Style="{StaticResource NumKey}" Content="C" Command="{Binding NumpadCommand}" CommandParameter="C"/>
+                        </UniformGrid>
+                        <Button Style="{StaticResource TouchAction}" Content="{s:Tr 'Set qty of selected line'}" Command="{Binding SetQtyFromNumpadCommand}"/>
+                    </StackPanel>
+                    <!-- actions -->
+                    <UniformGrid Grid.Column="1" Columns="2">
+                        <Button Style="{StaticResource TouchAction}" Content="+ 1" FontSize="20" Command="{Binding IncreaseQtyCommand}"/>
+                        <Button Style="{StaticResource TouchAction}" Content="- 1" FontSize="20" Command="{Binding DecreaseQtyCommand}"/>
+                        <Button Style="{StaticResource TouchAction}" Content="{s:Tr 'Item disc'}" Command="{Binding LineDiscountCommand}"/>
+                        <Button Style="{StaticResource TouchAction}" Content="{s:Tr 'Bill disc'}" Command="{Binding BillDiscountEditCommand}"/>
+                        <Button Style="{StaticResource TouchAction}" Content="{s:Tr 'Customer'}" Command="{Binding SelectCustomerCommand}"/>
+                        <Button Style="{StaticResource TouchAction}" Content="{s:Tr 'Void line'}" Command="{Binding VoidLineCommand}"/>
+                        <Button Style="{StaticResource TouchAction}" Content="{s:Tr 'Hold'}" Command="{Binding HoldCommand}"/>
+                        <Button Style="{StaticResource TouchAction}" Content="{s:Tr 'Recall'}" Command="{Binding RecallCommand}"/>
+                        <Button Style="{StaticResource TouchAction}" Content="{s:Tr 'Return'}" Command="{Binding ReturnCommand}"/>
+                        <Button Style="{StaticResource TouchAction}" Content="{s:Tr 'Cancel bill'}" Foreground="{StaticResource AlertBrush}" Command="{Binding CancelBillCommand}"/>
+                        <Button Style="{StaticResource TouchAction}" Content="{s:Tr 'Line note'}" Command="{Binding EditLineNoteCommand}"/>
+                    </UniformGrid>
+                </Grid>
+
+                <!-- cart -->
+                <ListBox ItemsSource="{Binding Lines}" SelectedItem="{Binding SelectedLine}" Margin="0,8,0,0" BorderBrush="{StaticResource LineBrush}"
+                         HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Focusable="False">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="2,6">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="{Binding DisplayName}" FontSize="15" TextTrimming="CharacterEllipsis"/>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Foreground="{StaticResource MutedBrush}" FontSize="13">
+                                            <Run Text="{Binding Qty, StringFormat={}{0:0.###}, Mode=OneWay}"/> x <Run Text="{Binding UnitPrice, StringFormat={}{0:N2}, Mode=OneWay}"/>
+                                        </TextBlock>
+                                        <Border Background="{StaticResource TagBrush}" CornerRadius="3" Padding="5,0" Margin="8,0,0,0"
+                                                Visibility="{Binding HasDiscount, Converter={StaticResource BoolToVis}}">
+                                            <TextBlock Text="{Binding DiscountText}" FontSize="12"/>
+                                        </Border>
+                                    </StackPanel>
+                                </StackPanel>
+                                <TextBlock Grid.Column="1" Text="{Binding RowAmount, StringFormat={}{0:N2}}" FontFamily="{StaticResource DisplayFont}"
+                                           FontSize="17" VerticalAlignment="Center"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </DockPanel>
+        </Grid>
+    </Grid>
+</UserControl>

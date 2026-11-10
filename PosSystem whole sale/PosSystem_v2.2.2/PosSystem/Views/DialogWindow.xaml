@@ -1,0 +1,11 @@
+<Window x:Class="PosSystem.Views.DialogWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        SizeToContent="WidthAndHeight" ResizeMode="NoResize" ShowInTaskbar="False"
+        WindowStartupLocation="CenterOwner" MinWidth="420" MaxHeight="900"
+        Background="{StaticResource PaperBrush}" FontFamily="{StaticResource BodyFont}" FontSize="14"
+        PreviewKeyDown="OnKey">
+    <Border Padding="24,20">
+        <ContentControl Content="{Binding}" Focusable="False"/>
+    </Border>
+</Window>

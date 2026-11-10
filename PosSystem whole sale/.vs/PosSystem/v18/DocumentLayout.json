@@ -1,0 +1,85 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\My Project\\PosSystem whole sale\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{B2000000-0000-0000-0000-000000000001}|PosSystem\\PosSystem.csproj|d:\\my project\\possystem whole sale\\possystem\\models\\billlayout.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B2000000-0000-0000-0000-000000000001}|PosSystem\\PosSystem.csproj|solutionrelative:possystem\\models\\billlayout.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B2000000-0000-0000-0000-000000000001}|PosSystem\\PosSystem.csproj|d:\\my project\\possystem whole sale\\possystem\\printing\\textreceipt.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B2000000-0000-0000-0000-000000000001}|PosSystem\\PosSystem.csproj|solutionrelative:possystem\\printing\\textreceipt.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B2000000-0000-0000-0000-000000000001}|PosSystem\\PosSystem.csproj|d:\\my project\\possystem whole sale\\possystem\\printing\\receiptprinter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B2000000-0000-0000-0000-000000000001}|PosSystem\\PosSystem.csproj|solutionrelative:possystem\\printing\\receiptprinter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B2000000-0000-0000-0000-000000000001}|PosSystem\\PosSystem.csproj|d:\\my project\\possystem whole sale\\possystem\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{B2000000-0000-0000-0000-000000000001}|PosSystem\\PosSystem.csproj|solutionrelative:possystem\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "BillLayout.cs",
+              "DocumentMoniker": "D:\\My Project\\PosSystem whole sale\\PosSystem\\Models\\BillLayout.cs",
+              "RelativeDocumentMoniker": "PosSystem\\Models\\BillLayout.cs",
+              "ToolTip": "D:\\My Project\\PosSystem whole sale\\PosSystem\\Models\\BillLayout.cs",
+              "RelativeToolTip": "PosSystem\\Models\\BillLayout.cs",
+              "ViewState": "AgIAAN8AAAAAAAAAAAA5wPIAAAA3AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-26T18:08:13.094Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "TextReceipt.cs",
+              "DocumentMoniker": "D:\\My Project\\PosSystem whole sale\\PosSystem\\Printing\\TextReceipt.cs",
+              "RelativeDocumentMoniker": "PosSystem\\Printing\\TextReceipt.cs",
+              "ToolTip": "D:\\My Project\\PosSystem whole sale\\PosSystem\\Printing\\TextReceipt.cs",
+              "RelativeToolTip": "PosSystem\\Printing\\TextReceipt.cs",
+              "ViewState": "AgIAABQAAAAAAAAAAAAqwCIAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-26T18:06:06.126Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "ReceiptPrinter.cs",
+              "DocumentMoniker": "D:\\My Project\\PosSystem whole sale\\PosSystem\\Printing\\ReceiptPrinter.cs",
+              "RelativeDocumentMoniker": "PosSystem\\Printing\\ReceiptPrinter.cs",
+              "ToolTip": "D:\\My Project\\PosSystem whole sale\\PosSystem\\Printing\\ReceiptPrinter.cs",
+              "RelativeToolTip": "PosSystem\\Printing\\ReceiptPrinter.cs",
+              "ViewState": "AgIAAHUAAAAAAAAAAAAIwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-26T18:05:59.044Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "D:\\My Project\\PosSystem whole sale\\PosSystem\\appsettings.json",
+              "RelativeDocumentMoniker": "PosSystem\\appsettings.json",
+              "ToolTip": "D:\\My Project\\PosSystem whole sale\\PosSystem\\appsettings.json",
+              "RelativeToolTip": "PosSystem\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAABQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-10-25T14:53:06.9Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
